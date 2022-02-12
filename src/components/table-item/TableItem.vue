@@ -20,7 +20,7 @@ export default defineComponent({
   },
   setup(props) {
     const { dependsOn, valueComputer } = toRefs(props);
-    debugger;
+
     const tableItemRef: Ref<HTMLElement | null> = ref(null);
     const eventBus = TableItemEventBus.getInstance();
     const itemId = uuidV4();

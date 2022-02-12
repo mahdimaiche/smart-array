@@ -1,7 +1,7 @@
 import type { ApiResponse } from "../models";
 import { DataRowKeys } from './data-row-keys';
 
-export const apiResonse: ApiResponse = {
+export const apiResponse: ApiResponse = {
   rows: [
     {
       key: DataRowKeys.Row1,
