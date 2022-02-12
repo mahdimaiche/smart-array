@@ -14,14 +14,16 @@ import type { TableItemInfo } from "../../models";
 export default defineComponent({
   props: {
     rowWidth: { type: Number, default: 0 },
-    columns: { type: Number, default: 4 },
+    columns: { type: Number, default: 0 },
   },
   setup(props) {
     const { rowWidth, columns } = toRefs(props);
     const tableRowRef: Ref<HTMLElement | null> = ref(null);
     const eventBus = TableItemEventBus.getInstance();
     const tableItems: Map<string, TableItemInfo> = new Map();
-    const tableItemWidth = computed(() => rowWidth.value / columns.value);
+    const tableItemWidth = computed(() =>
+      columns.value === 0 ? 0 : rowWidth.value / columns.value
+    );
 
     onMounted(() => {
       eventBus.subscribe((items: TableItemInfo[]) => {

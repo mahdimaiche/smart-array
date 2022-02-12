@@ -7,7 +7,7 @@ import { TableItemEventBus } from "./table-item-event-bus";
 
 export default defineComponent({
   props: {
-    data: { type: Object as PropType<Number | Function>, default: "" },
+    value: { type: Object as PropType<Number | Function>, default: "" },
   },
   setup(props, { emit }) {
     const tableItemRef: Ref<HTMLElement | null> = ref(null);
@@ -36,7 +36,7 @@ export default defineComponent({
 
 <template>
   <div class="table-item" ref="tableItemRef">
-    {{ data }}
+    {{ value }}
   </div>
 </template>
 
