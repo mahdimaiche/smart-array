@@ -4,6 +4,7 @@ import type { PropType } from "vue";
 import type { Ref } from "vue";
 import type { ApiResponse } from "../../models";
 import { rowDependencies, valueComputers } from "../../constants";
+import { useReactiveData } from "../../composables";
 
 import TableRow from "../table-row/TableRow.vue";
 import TableItem from "../table-item/TableItem.vue";
@@ -14,11 +15,22 @@ export default defineComponent({
     data: { type: Object as PropType<ApiResponse>, default: { rows: [] } },
   },
   setup(props) {
+    const { initStore } = useReactiveData();
     const { data } = toRefs(props);
 
     const tableRef: Ref<HTMLElement | null> = ref(null);
     const columnsCount = computed(() => getColumnCount(data.value));
     const rowWidth = ref(0);
+
+    watch(
+      data,
+      () => {
+        initStore(data.value.rows);
+      },
+      {
+        immediate: true,
+      }
+    );
 
     onMounted(() => {
       if (tableRef.value) {
@@ -75,7 +87,7 @@ export default defineComponent({
         :dependsOn="
           rowDependencies[row.key] && rowDependencies[row.key].dependsOn
         "
-        :valueComputer="
+        :valueComputationFunction="
           valueComputers[row.key] && valueComputers[row.key](i, j)
         "
       />

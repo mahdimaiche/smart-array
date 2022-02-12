@@ -11,5 +11,9 @@ export const apiResponse: ApiResponse = {
       key: DataRowKeys.Row2,
       data: [4, 5, 6],
     },
+    {
+      key: DataRowKeys.Row3,
+      data: [7, 8, 9],
+    },
   ]
 } 
