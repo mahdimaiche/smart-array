@@ -1,4 +1,4 @@
-export interface TableItemInfo {
+export type TableItemInfo = {
   id: string;
-  element: HTMLElement
+  element: HTMLElement;
 }

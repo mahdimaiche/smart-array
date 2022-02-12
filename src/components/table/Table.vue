@@ -3,6 +3,8 @@ import { computed, defineComponent, onMounted, ref, toRefs } from "vue";
 import type { PropType } from "vue";
 import type { Ref } from "vue";
 import type { ApiResponse } from "../../models";
+import { rowDependencies, valueComputers } from "../../constants";
+
 import TableRow from "../table-row/TableRow.vue";
 import TableItem from "../table-item/TableItem.vue";
 
@@ -11,8 +13,9 @@ export default defineComponent({
   props: {
     data: { type: Object as PropType<ApiResponse>, default: { rows: [] } },
   },
-  setup(props, { emit }) {
+  setup(props) {
     const { data } = toRefs(props);
+
     const tableRef: Ref<HTMLElement | null> = ref(null);
     const columnsCount = computed(() => getColumnCount(data.value));
     const rowWidth = ref(0);
@@ -50,6 +53,8 @@ export default defineComponent({
       columnsCount,
       tableRef,
       rowWidth,
+      valueComputers,
+      rowDependencies,
     };
   },
 });
@@ -58,15 +63,21 @@ export default defineComponent({
 <template>
   <div class="table" ref="tableRef">
     <TableRow
-      :key="i"
       v-for="(row, i) of data.rows"
+      :key="i"
       :columns="columnsCount"
       :rowWidth="rowWidth"
     >
       <TableItem
-        :key="`${i},${j}`"
         v-for="(value, j) of row.data"
+        :key="`${i},${j}`"
         :value="value"
+        :dependsOn="
+          rowDependencies[row.key] && rowDependencies[row.key].dependsOn
+        "
+        :valueComputer="
+          valueComputers[row.key] && valueComputers[row.key](i, j)
+        "
       />
     </TableRow>
   </div>

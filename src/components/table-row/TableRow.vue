@@ -18,6 +18,7 @@ export default defineComponent({
   },
   setup(props) {
     const { rowWidth, columns } = toRefs(props);
+
     const tableRowRef: Ref<HTMLElement | null> = ref(null);
     const eventBus = TableItemEventBus.getInstance();
     const tableItems: Map<string, TableItemInfo> = new Map();
