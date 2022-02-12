@@ -41,4 +41,8 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
+.table-item {
+  display: flex;
+  height: 100%;
+}
 </style>

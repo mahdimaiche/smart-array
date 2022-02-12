@@ -1,14 +1,13 @@
 <script  lang="ts">
-import TableRow from "./components/table-row/TableRow.vue";
+import Table from "./components/table/Table.vue";
 
 export default {
-  components: { TableRow },
+  components: { Table },
 };
 </script>
 
 <template>
-  tototo
-  <TableRow />
+  <Table />
 </template>
 
 <style></style>
