@@ -1,9 +1,14 @@
 <script  lang="ts">
-import { toRefs } from "vue";
+import TableRow from "./components/table-row/TableRow.vue";
 
-export default {};
+export default {
+  components: { TableRow },
+};
 </script>
 
-<template>Hello World</template>
+<template>
+  tototo
+  <TableRow />
+</template>
 
 <style></style>
