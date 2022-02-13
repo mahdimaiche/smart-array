@@ -13,12 +13,13 @@ import TableItem from "../table-item/TableItem.vue";
 export default defineComponent({
   components: { TableRow, TableItem },
   props: {
+    columnNames: { type: Object as PropType<String[]>, default: [] },
     data: { type: Object as PropType<ApiResponse>, default: { rows: [] } },
     rowHeight: { type: Number, default: 0 },
   },
   setup(props) {
     const { initStore } = useReactiveData();
-    const { data, rowHeight } = toRefs(props);
+    const { data, rowHeight, columnNames } = toRefs(props);
 
     const tableRef: Ref<HTMLElement | null> = ref(null);
     const columnsCount = computed(() => getColumnCount(data.value));
@@ -68,11 +69,13 @@ export default defineComponent({
       index: number;
       rowWidth: number;
       rowHeight: number;
+      className?: string;
     }) => {
-      const { row, index, rowWidth, rowHeight } = props;
+      const { row, index, rowWidth, rowHeight, className } = props;
       const rowId = uuidV4();
       return (
         <TableRow
+          class={`table__row ${className ? className : ""}`}
           key={rowId}
           rowId={rowId}
           columns={columnsCount.value}
@@ -81,6 +84,7 @@ export default defineComponent({
         >
           {(row.data as any[]).map(({ value }, j) => (
             <TableItem
+              class="table__item"
               key={uuidV4()}
               rowId={rowId}
               value={value}
@@ -94,6 +98,7 @@ export default defineComponent({
               {Array.isArray(value)
                 ? value.map((row: DataRow, index: number) => (
                     <Row
+                      className="table__row__nested"
                       row={row}
                       index={index}
                       rowWidth={Math.floor(rowWidth / row.data.length)}
@@ -107,18 +112,38 @@ export default defineComponent({
       );
     };
 
-    return () => (
-      <div class="table" ref={tableRef}>
-        {data.value.rows.map((row, i) => (
-          <Row
-            row={row}
-            index={i}
+    return () => {
+      const rowId = uuidV4();
+      return (
+        <div class="table" ref={tableRef}>
+          <TableRow
+            class="table__row"
+            key={rowId}
+            rowId={rowId}
+            columns={columnsCount.value}
             rowWidth={rowWidth.value}
             rowHeight={rowHeight.value}
-          />
-        ))}
-      </div>
-    );
+          >
+            {columnNames.value.map((name) => (
+              <TableItem
+                class="table__item"
+                key={rowId}
+                rowId={rowId}
+                value={name.toLocaleUpperCase()}
+              />
+            ))}
+          </TableRow>
+          {data.value.rows.map((row, i) => (
+            <Row
+              row={row}
+              index={i}
+              rowWidth={rowWidth.value}
+              rowHeight={rowHeight.value}
+            />
+          ))}
+        </div>
+      );
+    };
   },
 });
 </script>
@@ -129,5 +154,26 @@ export default defineComponent({
   height: "100%";
   display: "flex";
   flex-direction: row;
+
+  &__row {
+    &:first-child {
+      border-top: 1px solid var(--table-border-color);
+    }
+
+    &__nested {
+      .table-item:last-child {
+        border-right: none;
+      }
+    }
+  }
+
+  &__item {
+    border-bottom: 1px solid var(--table-border-color);
+    border-right: 1px solid var(--table-border-color);
+
+    &:first-child {
+      border-left: 1px solid var(--table-border-color);
+    }
+  }
 }
 </style>

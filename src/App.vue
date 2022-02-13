@@ -22,7 +22,22 @@ export default {
 </script>
 
 <template>
-  <Table :data="data" :rowHeight="100" />
+  <h1 class="title">Smart Table</h1>
+  <Table
+    :data="data"
+    :rowHeight="100"
+    :columnNames="['column 1', 'column 2', 'column 3']"
+  />
 </template>
 
-<style></style>
+<style>
+.title {
+  text-align: center;
+}
+
+:root {
+  --table-border-color: lightgrey;
+  --table-font-size: 16px;
+  --table-cell-background: #fffafa;
+}
+</style>

@@ -15,7 +15,7 @@ export default defineComponent({
   props: {
     rowId: { type: String, default: "" },
     value: {
-      type: Object as PropType<Number | DataRow[] | undefined>,
+      type: Object as PropType<Number | DataRow[] | String | undefined>,
       default: undefined,
     },
     dependsOn: {
@@ -33,7 +33,7 @@ export default defineComponent({
 
     const computedValue = ref(value.value as DataRow | number);
     const tableItemRef: Ref<HTMLElement | null> = ref(null);
-    const eventBus = TableItemEventBus.getInstance(rowId.value);
+    const eventBus = TableItemEventBus.getInstance(rowId.value)!;
     const itemId = uuidV4();
     const dependency = dependsOn.value
       ? getStoreSlice(dependsOn.value)
@@ -86,6 +86,10 @@ export default defineComponent({
 .table-item {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   height: 100%;
+  font-size: var(--table-font-size);
+  background-color: var(--table-cell-background);
 }
 </style>
