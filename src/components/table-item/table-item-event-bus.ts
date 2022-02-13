@@ -2,16 +2,15 @@ import type { TableItemInfo } from '../../models'
 
 export class TableItemEventBus {
   events: Map<string, TableItemInfo> = new Map();
-  private static instance: TableItemEventBus;
   private subscribers: ((tableItemInfo: TableItemInfo[]) => void)[] = [];
-
+  private static instanceMap: Map<string, TableItemEventBus> = new Map();
   private constructor() { }
 
-  public static getInstance() {
-    if (!TableItemEventBus.instance) {
-      TableItemEventBus.instance = new TableItemEventBus();
+  public static getInstance(id: string) {
+    if (!TableItemEventBus.instanceMap.has(id)) {
+      TableItemEventBus.instanceMap.set(id, new TableItemEventBus());
     }
-    return TableItemEventBus.instance;
+    return TableItemEventBus.instanceMap.get(id);
   }
 
   public pushEvent(id: string, info: TableItemInfo) {

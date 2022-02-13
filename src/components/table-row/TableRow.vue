@@ -13,15 +13,17 @@ import type { TableItemInfo } from "../../models";
 
 export default defineComponent({
   props: {
+    rowId: { type: String, default: "" },
     rowWidth: { type: Number, default: 0 },
+    rowHeight: { type: Number, default: 0 },
     columns: { type: Number, default: 0 },
   },
   setup(props) {
-    const { rowWidth, columns } = toRefs(props);
-
+    const { rowWidth, columns, rowHeight, rowId } = toRefs(props);
     const tableRowRef: Ref<HTMLElement | null> = ref(null);
-    const eventBus = TableItemEventBus.getInstance();
+    const eventBus = TableItemEventBus.getInstance(rowId.value)!;
     const tableItems: Map<string, TableItemInfo> = new Map();
+
     const tableItemWidth = computed(() =>
       columns.value === 0 ? 0 : rowWidth.value / columns.value
     );
@@ -43,6 +45,9 @@ export default defineComponent({
       const items = Array.from(tableItems.values());
       for (const item of items) {
         item.element.style.width = `${tableItemWidth.value}px`;
+        item.element.style.height = rowHeight.value
+          ? `${rowHeight.value}px`
+          : "100%";
       }
     }
 
@@ -62,6 +67,5 @@ export default defineComponent({
 <style lang="scss">
 .table-row {
   display: flex;
-  height: "50px";
 }
 </style>

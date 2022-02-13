@@ -6,5 +6,9 @@ export type ApiResponse = {
 
 export type DataRow = {
   key: DataRowKeys;
-  data: number[] | DataRow[];
+  data: DataCell[];
+}
+
+export type DataCell = {
+  value: number | DataRow[];
 }

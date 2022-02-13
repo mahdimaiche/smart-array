@@ -12,7 +12,7 @@ export class HttpService {
     return HttpService.instance;
   }
 
-  getAll(timeout = 2000): Promise<ApiResponse> {
+  getAll(timeout = 200): Promise<ApiResponse> {
     return new Promise(resolve => {
       setTimeout(() => {
         resolve(apiResponse);

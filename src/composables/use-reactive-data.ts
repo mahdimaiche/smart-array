@@ -12,13 +12,11 @@ for (const key of dependentKeys) {
 export function useReactiveData() {
   function initStore(data: DataRow[]) {
     for (const row of data) {
-      if (typeof row.data[0] === 'number') {
+      if (typeof row.data[0].value === 'number') {
         const reactiveValue = reactiveStore.get(row.key);
         if (reactiveValue) {
-          reactiveValue.value = row.data;
+          reactiveValue.value = row.data.map(dataCell => dataCell.value);
         }
-      } else if (typeof row.data[0] === 'object') {
-        initStore(row.data as DataRow[]);
       }
     }
   }

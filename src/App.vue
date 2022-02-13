@@ -22,7 +22,7 @@ export default {
 </script>
 
 <template>
-  <Table :data="data" />
+  <Table :data="data" :rowHeight="100" />
 </template>
 
 <style></style>

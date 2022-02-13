@@ -1,8 +1,9 @@
-<script lang="ts">
+<script lang="tsx">
 import { computed, defineComponent, onMounted, ref, toRefs, watch } from "vue";
 import type { PropType } from "vue";
 import type { Ref } from "vue";
-import type { ApiResponse } from "../../models";
+import { v4 as uuidV4 } from "uuid";
+import type { ApiResponse, DataRow } from "../../models";
 import { rowDependencies, valueComputers } from "../../constants";
 import { useReactiveData } from "../../composables";
 
@@ -13,10 +14,11 @@ export default defineComponent({
   components: { TableRow, TableItem },
   props: {
     data: { type: Object as PropType<ApiResponse>, default: { rows: [] } },
+    rowHeight: { type: Number, default: 0 },
   },
   setup(props) {
     const { initStore } = useReactiveData();
-    const { data } = toRefs(props);
+    const { data, rowHeight } = toRefs(props);
 
     const tableRef: Ref<HTMLElement | null> = ref(null);
     const columnsCount = computed(() => getColumnCount(data.value));
@@ -61,39 +63,65 @@ export default defineComponent({
       return tableRef.value!.getBoundingClientRect().width;
     }
 
-    return {
-      columnsCount,
-      tableRef,
-      rowWidth,
-      valueComputers,
-      rowDependencies,
+    const Row = (props: {
+      row: DataRow;
+      index: number;
+      rowWidth: number;
+      rowHeight: number;
+    }) => {
+      const { row, index, rowWidth, rowHeight } = props;
+      const rowId = uuidV4();
+      return (
+        <TableRow
+          key={rowId}
+          rowId={rowId}
+          columns={columnsCount.value}
+          rowWidth={rowWidth}
+          rowHeight={rowHeight}
+        >
+          {(row.data as any[]).map(({ value }, j) => (
+            <TableItem
+              key={uuidV4()}
+              rowId={rowId}
+              value={value}
+              dependsOn={
+                rowDependencies[row.key] && rowDependencies[row.key]!.dependsOn
+              }
+              valueComputationFunction={
+                valueComputers[row.key] && valueComputers[row.key]!(index, j)
+              }
+            >
+              {Array.isArray(value)
+                ? value.map((row: DataRow, index: number) => (
+                    <Row
+                      row={row}
+                      index={index}
+                      rowWidth={Math.floor(rowWidth / row.data.length)}
+                      rowHeight={Math.floor(rowHeight / value.length)}
+                    />
+                  ))
+                : null}
+            </TableItem>
+          ))}
+        </TableRow>
+      );
     };
+
+    return () => (
+      <div class="table" ref={tableRef}>
+        {data.value.rows.map((row, i) => (
+          <Row
+            row={row}
+            index={i}
+            rowWidth={rowWidth.value}
+            rowHeight={rowHeight.value}
+          />
+        ))}
+      </div>
+    );
   },
 });
 </script>
-
-<template>
-  <div class="table" ref="tableRef">
-    <TableRow
-      v-for="(row, i) of data.rows"
-      :key="i"
-      :columns="columnsCount"
-      :rowWidth="rowWidth"
-    >
-      <TableItem
-        v-for="(value, j) of row.data"
-        :key="`${i},${j}`"
-        :value="value"
-        :dependsOn="
-          rowDependencies[row.key] && rowDependencies[row.key].dependsOn
-        "
-        :valueComputationFunction="
-          valueComputers[row.key] && valueComputers[row.key](i, j)
-        "
-      />
-    </TableRow>
-  </div>
-</template>
 
 <style lang="scss">
 .table {

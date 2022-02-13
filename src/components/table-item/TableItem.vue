@@ -2,14 +2,22 @@
 import { defineComponent, toRefs, onMounted, ref, watch } from "vue";
 import type { Ref, PropType } from "vue";
 import { v4 as uuidV4 } from "uuid";
-import type { TableItemInfo, ValueComputationFunction } from "../../models";
+import type {
+  DataRow,
+  TableItemInfo,
+  ValueComputationFunction,
+} from "../../models";
 import { TableItemEventBus } from "./table-item-event-bus";
 import type { DataRowKeys } from "../../constants";
 import { useReactiveData } from "../../composables";
 
 export default defineComponent({
   props: {
-    value: { type: Object as PropType<Number | Function>, default: "" },
+    rowId: { type: String, default: "" },
+    value: {
+      type: Object as PropType<Number | DataRow[] | undefined>,
+      default: undefined,
+    },
     dependsOn: {
       type: String as PropType<DataRowKeys | undefined>,
       default: undefined,
@@ -20,12 +28,12 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { dependsOn, valueComputationFunction, value } = toRefs(props);
+    const { dependsOn, valueComputationFunction, value, rowId } = toRefs(props);
     const { getStoreSlice } = useReactiveData();
 
-    const computedValue: Ref<number> = ref(value.value as number);
+    const computedValue = ref(value.value as DataRow | number);
     const tableItemRef: Ref<HTMLElement | null> = ref(null);
-    const eventBus = TableItemEventBus.getInstance();
+    const eventBus = TableItemEventBus.getInstance(rowId.value);
     const itemId = uuidV4();
     const dependency = dependsOn.value
       ? getStoreSlice(dependsOn.value)
@@ -40,10 +48,12 @@ export default defineComponent({
     watch(
       dependency,
       () => {
-        if (valueComputationFunction.value) {
-          computedValue.value = valueComputationFunction.value(
-            dependency.value
-          );
+        if (typeof computedValue.value !== "object") {
+          if (valueComputationFunction.value) {
+            computedValue.value = valueComputationFunction.value(
+              dependency.value
+            );
+          }
         }
       },
       { immediate: true }
@@ -66,13 +76,16 @@ export default defineComponent({
 
 <template>
   <div class="table-item" ref="tableItemRef">
-    {{ computedValue }}
+    <slot>
+      {{ computedValue }}
+    </slot>
   </div>
 </template>
 
 <style lang="scss">
 .table-item {
   display: flex;
+  flex-direction: column;
   height: 100%;
 }
 </style>
