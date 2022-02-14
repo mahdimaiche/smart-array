@@ -1,52 +1,14 @@
 # smart-array
 
-This template should help get you started developing with Vue 3 in Vite.
+## What does this project consist of?
 
-## Recommended IDE Setup
+This project is a responsive Table component that allows for visualizing data in a table like fashion.\
+The table was developed mainly to handle numeric values but it can be generalized to other types easily. Each cell can contain either a numeric value, a complete line, or completely another table. There are no limitations on the nesting levels.\
+The table rows are also reactive, each row can react to changes of other rows and update accordingly.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
+The component is written completely in Vue3 with no dependency on other libraries.
 
-## Type Support for `.vue` Imports in TS
+## How does the reactiveness work?
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+The idea is pretty simple, each row is assigned a key, which can be theoritically any string. Also each row must declare its dependencies on other rows.\
+The rest is the magic of the Vue reactiveness system, with each row pointing to its dependency, updates on row changes are done automatically.
