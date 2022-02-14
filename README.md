@@ -1,4 +1,4 @@
-# smart-array
+# Smart-Table
 
 ## What does this project consist of?
 
