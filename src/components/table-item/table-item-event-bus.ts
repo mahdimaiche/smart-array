@@ -16,7 +16,6 @@ export class TableItemEventBus {
   public pushEvent(id: string, info: TableItemInfo) {
     this.events.set(id, info);
     this.subscribers.forEach(subscriber => subscriber([info]));
-
   }
 
   public subscribe(consumer: (tableItemInfo: TableItemInfo[]) => void) {
@@ -24,6 +23,5 @@ export class TableItemEventBus {
     if (this.events.size > 0) {
       consumer(Array.from(this.events.values()));
     }
-
   }
 }
