@@ -19,14 +19,14 @@ export function useReactiveData() {
       if (typeof row.data[0].value === 'number') {
         const reactiveValue = reactiveStore.get(row.key);
         if (reactiveValue) {
-          reactiveValue.value = row.data.map(dataCell => dataCell.value);
+          reactiveValue.value = row.data.map(dataCell => dataCell.value) as number[];
         }
       }
     }
   }
 
   function getStoreSlice(dependency: DataRowKeys): Ref<number[]> {
-    return reactiveStore.get(dependency);
+    return reactiveStore.get(dependency)!;
   }
 
   return {

@@ -1,7 +1,6 @@
 <script  lang="ts">
 import { defineComponent, toRefs, onMounted, ref, watch } from "vue";
 import type { Ref, PropType } from "vue";
-import { v4 as uuidV4 } from "uuid";
 import type {
   DataRow,
   TableItemInfo,
@@ -34,7 +33,7 @@ export default defineComponent({
     const computedValue = ref(value.value as DataRow | number);
     const tableItemRef: Ref<HTMLElement | null> = ref(null);
     const eventBus = TableItemEventBus.getInstance(rowId.value)!;
-    const itemId = uuidV4();
+    const itemId = `${Math.floor(Math.random() * 10000)}`;
     const dependency = dependsOn.value
       ? getStoreSlice(dependsOn.value)
       : ref([]);

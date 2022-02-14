@@ -1,30 +1,30 @@
-<script  lang="ts">
-import { ref } from "vue";
+<script lang="ts">
+import { defineComponent, ref } from "vue";
 import type { Ref } from "vue";
 import Table from "./components/table/Table.vue";
 import type { ApiResponse } from "./models";
 import { HttpService } from "./services";
 
-export default {
+export default defineComponent({
   components: { Table },
   setup() {
-    const data: Ref<ApiResponse> = ref({ rows: [] });
+    const apiResponse: Ref<ApiResponse> = ref({ rows: [] });
     const httpService = HttpService.getInstance();
     httpService.getAll().then((response) => {
-      data.value = response;
+      apiResponse.value = response;
     });
 
     return {
-      data,
+      apiResponse,
     };
   },
-};
+});
 </script>
 
 <template>
   <h1 class="title">Smart Table</h1>
   <Table
-    :data="data"
+    :data="apiResponse"
     :rowHeight="100"
     :columnNames="['column 1', 'column 2', 'column 3']"
   />

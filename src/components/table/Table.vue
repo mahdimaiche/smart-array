@@ -2,7 +2,6 @@
 import { computed, defineComponent, onMounted, ref, toRefs, watch } from "vue";
 import type { PropType } from "vue";
 import type { Ref } from "vue";
-import { v4 as uuidV4 } from "uuid";
 import type { ApiResponse, DataRow } from "../../models";
 import { getRowDependencies, getValueComputers } from "../../constants";
 import { useReactiveData } from "../../composables";
@@ -75,7 +74,7 @@ export default defineComponent({
       className?: string;
     }) => {
       const { row, index, rowWidth, rowHeight, className } = props;
-      const rowId = uuidV4();
+      const rowId = `${Math.floor(Math.random() * 10000)}`;
       return (
         <TableRow
           class={`table__row ${className ? className : ""}`}
@@ -88,7 +87,7 @@ export default defineComponent({
           {(row.data as any[]).map(({ value }, j) => (
             <TableItem
               class="table__item"
-              key={uuidV4()}
+              key={`${Math.floor(Math.random() * 10000)}`}
               rowId={rowId}
               value={value}
               dependsOn={
@@ -116,7 +115,7 @@ export default defineComponent({
     };
 
     return () => {
-      const rowId = uuidV4();
+      const rowId = `${Math.floor(Math.random() * 10000)}`;
       return (
         <div class="table" ref={tableRef}>
           <TableRow
