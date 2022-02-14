@@ -4,7 +4,7 @@ import type { PropType } from "vue";
 import type { Ref } from "vue";
 import { v4 as uuidV4 } from "uuid";
 import type { ApiResponse, DataRow } from "../../models";
-import { rowDependencies, valueComputers } from "../../constants";
+import { getRowDependencies, getValueComputers } from "../../constants";
 import { useReactiveData } from "../../composables";
 
 import TableRow from "../table-row/TableRow.vue";
@@ -18,17 +18,20 @@ export default defineComponent({
     rowHeight: { type: Number, default: 0 },
   },
   setup(props) {
-    const { initStore } = useReactiveData();
+    const { initStore, loadData } = useReactiveData();
+    initStore();
     const { data, rowHeight, columnNames } = toRefs(props);
-
+    const dataRows = computed(() => data.value.rows);
     const tableRef: Ref<HTMLElement | null> = ref(null);
-    const columnsCount = computed(() => getColumnCount(data.value));
+    const columnsCount = computed(() => getColumnCount(dataRows.value));
     const rowWidth = ref(0);
+    const rowDependencies = getRowDependencies();
+    const valueComputers = getValueComputers();
 
     watch(
       data,
       () => {
-        initStore(data.value.rows);
+        loadData(dataRows.value);
       },
       {
         immediate: true,
@@ -48,9 +51,9 @@ export default defineComponent({
       }
     });
 
-    function getColumnCount(response: ApiResponse): number {
+    function getColumnCount(rows: DataRow[]): number {
       let maxColumns = 0;
-      for (const row of response.rows) {
+      for (const row of rows) {
         if (!Array.isArray(row.data)) {
           throw "The api response data is malformed";
         }
@@ -133,7 +136,7 @@ export default defineComponent({
               />
             ))}
           </TableRow>
-          {data.value.rows.map((row, i) => (
+          {dataRows.value.map((row, i) => (
             <Row
               row={row}
               index={i}
