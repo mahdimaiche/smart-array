@@ -5,6 +5,7 @@ import type { Ref } from "vue";
 import type { ApiResponse, DataRow } from "../../models";
 import { getRowDependencies, getValueComputers } from "../../constants";
 import { useReactiveData } from "../../composables";
+import { getRandomId } from "../../utils";
 
 import TableRow from "../table-row/TableRow.vue";
 import TableItem from "../table-item/TableItem.vue";
@@ -74,7 +75,7 @@ export default defineComponent({
       className?: string;
     }) => {
       const { row, index, rowWidth, rowHeight, className } = props;
-      const rowId = `${Math.floor(Math.random() * 10000)}`;
+      const rowId = getRandomId();
       return (
         <TableRow
           class={`table__row ${className ? className : ""}`}
@@ -87,7 +88,7 @@ export default defineComponent({
           {(row.data as any[]).map(({ value }, j) => (
             <TableItem
               class="table__item"
-              key={`${Math.floor(Math.random() * 10000)}`}
+              key={getRandomId()}
               rowId={rowId}
               value={value}
               dependsOn={
@@ -115,7 +116,7 @@ export default defineComponent({
     };
 
     return () => {
-      const rowId = `${Math.floor(Math.random() * 10000)}`;
+      const rowId = `${getRandomId()}`;
       return (
         <div class="table" ref={tableRef}>
           <TableRow

@@ -9,6 +9,7 @@ import type {
 import { TableItemEventBus } from "./table-item-event-bus";
 import type { DataRowKeys } from "../../constants";
 import { useReactiveData } from "../../composables";
+import { getRandomId } from "../../utils";
 
 export default defineComponent({
   props: {
@@ -33,7 +34,7 @@ export default defineComponent({
     const computedValue = ref(value.value as DataRow | number);
     const tableItemRef: Ref<HTMLElement | null> = ref(null);
     const eventBus = TableItemEventBus.getInstance(rowId.value)!;
-    const itemId = `${Math.floor(Math.random() * 10000)}`;
+    const itemId = getRandomId();
     const dependency = dependsOn.value
       ? getStoreSlice(dependsOn.value)
       : ref([]);
